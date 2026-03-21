@@ -1,0 +1,19 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+        default_layer {
+            bindings = <
+                &kp N1 &kp N2 &kp N3
+                &kp N4 &kp N5 &kp N6
+                &kp N7 &kp N8 &kp N9
+                &kp N0 &kp DOT &kp RET
+                &kp ESC &kp SPACE &kp BSPC
+            >;
+            // 预留给你的旋钮
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
+        };
+    };
+};
