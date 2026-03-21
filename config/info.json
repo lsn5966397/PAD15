@@ -1,0 +1,30 @@
+{
+  "keyboard_name": "MacroPad15",
+  "layouts": {
+    "LAYOUT": {
+      "layout": [
+        {"x": 0, "y": 0, "label": "Home"},
+        {"x": 1, "y": 0, "label": "End"},
+        {"x": 2, "y": 0, "label": "Insert"},
+        {"x": 3.5, "y": 0.5, "label": "旋钮按压"},
+
+        {"x": 0, "y": 1, "label": "F7"},
+        {"x": 1, "y": 1, "label": "F8"},
+        {"x": 2, "y": 1, "label": "F9"},
+        {"x": 3.5, "y": 2, "label": "摇杆中键"},
+
+        {"x": 0, "y": 2, "label": "F4"},
+        {"x": 1, "y": 2, "label": "F5"},
+        {"x": 2, "y": 2, "label": "F6"},
+
+        {"x": 0, "y": 3, "label": "F1"},
+        {"x": 1, "y": 3, "label": "F2"},
+        {"x": 2, "y": 3, "label": "F3"},
+
+        {"x": 0, "y": 4, "label": "F10"},
+        {"x": 1, "y": 4, "label": "F11"},
+        {"x": 2, "y": 4, "label": "F12"}
+      ]
+    }
+  }
+}
