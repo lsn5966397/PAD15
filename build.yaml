@@ -1,4 +1,4 @@
 ---
 include:
   - board: SuperMininrf52840
-    shield: Pad15
+    shield: PAD15
