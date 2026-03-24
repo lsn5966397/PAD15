@@ -33,6 +33,13 @@
             #sensor-binding-cells = <0>;
             bindings = <&kp C_VOLUME_UP>, <&kp C_VOL_DN>;
         };
+
+        double_tap_up: double_tap_up {
+            compatible = "zmk,behavior-tap-dance";
+            label = "DOUBLE_TAP_UP";
+            #binding-cells = <0>;
+            bindings = <&kp UP>, <&kp LS(UP)>;
+        };
     };
 
     keymap {
@@ -60,11 +67,11 @@
 
         game {
             bindings = <
-&trans     &trans    &trans     &trans
-&trans     &kp UP    &trans     &trans
-&kp LEFT   &kp DOWN  &kp RIGHT
-&kp LCTRL  &trans    &kp LALT
-&trans     &trans    &kp SPACE
+&trans     &trans          &trans     &trans
+&trans     &double_tap_up  &trans     &trans
+&kp LEFT   &kp DOWN        &kp RIGHT
+&kp LCTRL  &trans          &kp LALT
+&trans     &trans          &kp SPACE
             >;
         };
     };
