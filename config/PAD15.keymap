@@ -1,7 +1,18 @@
-#include <behaviors.dtsi>
+/* 第一部分：引入必要的字典 */
+#include <behaviors.dtsi>          // 核心行为
+#include <dt-bindings/zmk/keys.h>  // 键盘按键字典 (如 A, B, RET)
+#include <dt-bindings/zmk/bt.h>    // 蓝牙控制字典
+#include <dt-bindings/zmk/ext_power.h> // 电源控制
+#include <dt-bindings/zmk/mouse.h> // 鼠标控制字典
+#include <dt-bindings/zmk/rgb.h>        // RGB 灯效控制
+#include <dt-bindings/zmk/outputs.h>    // 输出切换 (USB/BLE)
+#include <dt-bindings/zmk/pointing.h>   /* 鼠标滚轮模拟*/
 #include <dt-bindings/zmk/backlight.h>
-#include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/pointing.h>   /* 新增：鼠标滚轮需要这个 */
+
+/* 第二部分：定义你的层级名称（方便阅读，不是必须的，但极度推荐） */
+#define DEFAULT 0   // 办公模式
+#define GAME    1   // 游戏模式
+#define GLOBAL  2   // 你的全局设置层 (音量/灯光)
 
 / {
     combos {
