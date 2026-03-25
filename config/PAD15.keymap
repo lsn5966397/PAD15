@@ -7,7 +7,6 @@
 #include <dt-bindings/zmk/rgb.h>        // RGB 灯效控制
 #include <dt-bindings/zmk/outputs.h>    // 输出切换 (USB/BLE)
 #include <dt-bindings/zmk/pointing.h>   /* 鼠标滚轮模拟*/
-#include <dt-bindings/zmk/backlight.h>
 
 /* 第二部分：定义你的层级名称（方便阅读，不是必须的，但极度推荐） */
 #define DEFAULT 0   // 办公模式
