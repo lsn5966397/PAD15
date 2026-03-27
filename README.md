@@ -49,6 +49,9 @@ source ~/.bashrc
 # 初始化 west（把当前仓库当作 zmk-config）
 west init -l .
 
+# 
+cd /workspaces/zmk
+
 # 更新所有源码和模块
 west update
 
