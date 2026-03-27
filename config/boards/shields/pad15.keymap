@@ -66,7 +66,7 @@
         office {
             sensor-bindings = <&EC11_ROTATE>;
             bindings = <
-                &kp DEL       &kp HOME      &kp END          &encoder_mute
+                &kp DEL       &kp HOME      &kp END          &encoder_mute        &bt BT_CLR &bootloader
                 &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9     &mkp LCLK
                 &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6
                 &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3
@@ -83,7 +83,7 @@
         function {
             sensor-bindings = <&EC11_ROTATE>;
             bindings = <
-                &kp K_LOCK  &bl BL_INC  &bl BL_DEC  &encoder_mute
+                &kp K_LOCK  &bl BL_INC  &bl BL_DEC  &encoder_mute        &bt BT_CLR &bootloader
                 &kp F7      &kp F8      &kp F9      &mkp LCLK
                 &kp F4      &kp F5      &kp F6
                 &kp F1      &kp F2      &kp F3
@@ -99,7 +99,7 @@
         game {
             sensor-bindings = <&EC11_ROTATE>;
             bindings = <
-                &trans     &trans          &trans     &trans
+                &trans     &trans          &trans     &trans        &bt BT_CLR &bootloader
                 &trans     &double_tap_up  &trans     &trans
                 &kp LEFT   &kp DOWN        &kp RIGHT
                 &kp LCTRL  &trans          &kp LALT
