@@ -13,19 +13,6 @@ This is a wireless dual-mode multifunction mini-keyboard project with EC11 knob 
 ```
 pad15/       ← 项目根目录
 ├── config/
-│   ├── Kconfig.defconfig
-│   ├── Kconfig.shield
-│   ├── pad15.json
-│   └── shields/
-│       └── pad15/
-│           ├── pad15.conf
-│           ├── pad15.keymap
-│           ├── pad15.overlay                
-│           └── pad15.zmk.yml
-├── west.yml
-└── README.md
-zmk-config/
-├── config/
 │   ├── pad15.conf
 │   ├── pad15.json
 │   ├── pad15.zmk.yml
