@@ -24,7 +24,8 @@ pad15/       ← 项目根目录
 ├── west.yml
 └── README.md
 ```
-这里建议项目名称用小写，因为
+这里建议项目名称用小写，因为在`config/Kconfig.defconfig` 中需定义大写的项目名称，随后使用小写，都用大写可能会导致混乱。
+
 随后回到项目仓库主页，新建一个GitHub代码空间，在终端处输入：
 ```
 # 1. 更新系统包
@@ -48,3 +49,7 @@ west init -l .
 
 # 更新所有源码和模块（包括你 west.yml 里加的 analog-input-driver）
 west update
+
+# 正式编译命令
+$ west build -s app -b nice_nano -p -- -DSHIELD=pad15 -DZMK_CONFIG="/workspaces/pad15/config"
+```
