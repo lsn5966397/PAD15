@@ -1,17 +1,20 @@
 #include <dt-bindings/zmk/matrix_transform.h>
-#include <dt-bindings/input/input-event-codes.h>
+#include <dt-bindings/led/led.h>
+#include <dt-bindings/pinctrl/nrf-pinctrl.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
 
 / {
     chosen {
-        zmk,matrix_transform = <&transform>;   /* Studio 需要 */
+        zmk,matrix_transform = <&transform>;
         zmk,underglow = &led_strip;
     };
 
-    /* 只保留 WS2812 和摇杆增强（kscan/encoder 全部交给 dtsi） */
+    /* 只保留 WS2812 + 摇杆，其余 kscan/transform/encoder 全部交给 dtsi */
     &adc {
         status = "okay";
     };
 
+    /* 霍尔摇杆 → 鼠标指针 */
     joystick: analog_input_0 {
         compatible = "zmk,analog-input";
         sampling-hz = <100>;
@@ -24,8 +27,8 @@
             scale-multiplier = <1>;
             scale-divisor = <60>;
             invert;
-            evt-type = <EV_ABS>;
-            input-code = <ABS_X>;
+            evt-type = <INPUT_EV_REL>;
+            input-code = <INPUT_REL_X>;
         };
 
         y-ch {
@@ -36,8 +39,8 @@
             scale-multiplier = <1>;
             scale-divisor = <60>;
             invert;
-            evt-type = <EV_ABS>;
-            input-code = <ABS_Y>;
+            evt-type = <INPUT_EV_REL>;
+            input-code = <INPUT_REL_Y>;
             report-on-change-only;
         };
     };
@@ -45,8 +48,18 @@
 
 /* WS2812 灯带 */
 &pinctrl {
-    spi3_default: spi3_default { group1 { psels = <NRF_PSEL(SPIM_SCK, 0, 31)>; }; };
-    spi3_sleep: spi3_sleep { group1 { psels = <NRF_PSEL(SPIM_SCK, 0, 31)>; low-power-enable; }; };
+    spi3_default: spi3_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 10)>;
+        };
+    };
+
+    spi3_sleep: spi3_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_MOSI, 0, 10)>;
+            low-power-enable;
+        };
+    };
 };
 
 &spi3 {
@@ -63,6 +76,6 @@
         chain-length = <16>;
         spi-one-frame = <0x70>;
         spi-zero-frame = <0x40>;
-        color-mapping = <0x00 0x00 0x00 0x00>;  /* GRB order */
+        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
     };
 };
