@@ -1,4 +1,6 @@
+---
 include:
   - board: nice_nano
     shield: pad15
-
+    snippet: studio-rpc-usb-uart
+    cmake-args: -DCONFIG_ZMK_STUDIO=y
