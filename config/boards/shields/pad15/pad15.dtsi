@@ -1,120 +1,99 @@
 #include <physical_layouts.dtsi>
 #include <dt-bindings/zmk/matrix_transform.h>
 
-
 / {
     chosen {
         zmk,kscan = &kscan0;
         zmk,physical-layout = &layout;
     };
-  
-    /* * 1. 物理布局 (Physical Layout) 
-     * 这里定义了网页上看到的键盘长什么样。
-     * 参数含义：<&key_physical_attrs 宽度(100=1U) 高度(100=1U) X坐标 Y坐标 旋转角度 旋转中心X 旋转中心Y>
-     */
+
+    /* 1. 物理布局（visualizer 用） */
     layout: layout {
         compatible = "zmk,physical-layout";
         display-name = "pad15";
         transform = <&transform>;
-        kscan = <&kscan>;
+        kscan = <&kscan0>;               /* 必须指向 composite */
 
-        keys  //                     w   h    x    y     rot    rx    ry
-            = <&key_physical_attrs 100 100    0    0       0     0     0>
-            , <&key_physical_attrs 100 100  100    0       0     0     0>
-            , <&key_physical_attrs 100 100  200    0       0     0     0>
-            , <&key_physical_attrs 100 100    0  100       0     0     0>
-            , <&key_physical_attrs 100 100  100  100       0     0     0>
-            , <&key_physical_attrs 100 100  200  100       0     0     0>
-            , <&key_physical_attrs 100 100    0  200       0     0     0>
-            , <&key_physical_attrs 100 100  100  200       0     0     0>
-            , <&key_physical_attrs 100 100  200  200       0     0     0>
-            , <&key_physical_attrs 100 100    0  300       0     0     0>
-            , <&key_physical_attrs 100 100  100  300       0     0     0>
-            , <&key_physical_attrs 100 100  200  300       0     0     0>
-            , <&key_physical_attrs 100 100    0  400       0     0     0>
-            , <&key_physical_attrs 100 100  100  400       0     0     0>
-            , <&key_physical_attrs 100 100  200  400       0     0     0>
-            /* 4个触摸按键 */
-            , <&key_physical_attrs 100 100  300  300       0     0     0>
-            , <&key_physical_attrs 100 100  300  400       0     0     0>
-            , <&key_physical_attrs 100 100  300  500       0     0     0>
-            , <&key_physical_attrs 100 100  300  600       0     0     0>
-            ;
+        keys = <&key_physical_attrs 100 100    0    0       0     0     0>
+               , <&key_physical_attrs 100 100  100    0       0     0     0>
+               , <&key_physical_attrs 100 100  200    0       0     0     0>
+               , <&key_physical_attrs 100 100    0  100       0     0     0>
+               , <&key_physical_attrs 100 100  100  100       0     0     0>
+               , <&key_physical_attrs 100 100  200  100       0     0     0>
+               , <&key_physical_attrs 100 100    0  200       0     0     0>
+               , <&key_physical_attrs 100 100  100  200       0     0     0>
+               , <&key_physical_attrs 100 100  200  200       0     0     0>
+               , <&key_physical_attrs 100 100    0  300       0     0     0>
+               , <&key_physical_attrs 100 100  100  300       0     0     0>
+               , <&key_physical_attrs 100 100  200  300       0     0     0>
+               , <&key_physical_attrs 100 100    0  400       0     0     0>
+               , <&key_physical_attrs 100 100  100  400       0     0     0>
+               , <&key_physical_attrs 100 100  200  400       0     0     0>
+               /* 4 个触摸键（第四列） */
+               , <&key_physical_attrs 100 100  300  300       0     0     0>
+               , <&key_physical_attrs 100 100  300  400       0     0     0>
+               , <&key_physical_attrs 100 100  300  500       0     0     0>
+               , <&key_physical_attrs 100 100  300  600       0     0     0>
+               ;
     };
 
-    /* * 2. 矩阵转换 (Matrix Transform)
-     * 告诉 ZMK，物理按键是如何映射到你的 Keymap 数组里的。
-     * RC(行, 列)
-     */
+    /* 2. 矩阵转换（5行4列，最干净） */
     transform: matrix_transform {
         compatible = "zmk,matrix-transform";
-        rows = <9>;
+        rows = <5>;
         columns = <4>;
 
         map = <
-              RC(0,0) RC(0,1) RC(0,2) RC(0,3)
-              RC(1,0) RC(1,1) RC(1,2) RC(1,3)
-              RC(2,0) RC(2,1) RC(2,2)
-              RC(3,0) RC(3,1) RC(3,2)
-              RC(4,0) RC(4,1) RC(4,2)
-  
-              /* 4 个触摸板位置 */
-              RC(5,3) RC(6,3) RC(7,3) RC(8,3)
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3)
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3)
+            RC(2,0) RC(2,1) RC(2,2) RC(2,3)
+            RC(3,0) RC(3,1) RC(3,2) RC(3,3)
+            RC(4,0) RC(4,1) RC(4,2) RC(255,255)  /* 最后一个 &none */
         >;
     };
 
-    /* * 3. 复合按键扫描 (Kscan Composite)
-     * 因为你有标准的矩阵按键，又有独立的触摸按键，所以要把它们组合起来。
-     */
+    /* 3. 复合 kscan（核心修复） */
     kscan0: kscan_0 {
         compatible = "zmk,kscan-composite";
-        /* 矩阵按键部分 */
+
         matrix {
             kscan = <&kscan_matrix>;
         };
-        /* 触摸按键部分，将其映射到虚拟的第4列*/
+
         touch {
             kscan = <&kscan_touch>;
-            col-offset = <3>; 
+            row-offset = <0>;
+            col-offset = <3>;   /* 4 个触摸键放在第 4 列 */
         };
     };
-    kscan: kscan {
+
+    kscan_matrix: kscan_matrix {
         compatible = "zmk,kscan-gpio-matrix";
         diode-direction = "col2row";
-        col-gpios
-            = <&gpio0 6 GPIO_ACTIVE_HIGH>
-            , <&gpio0 8 GPIO_ACTIVE_HIGH>
-            , <&gpio1 0 GPIO_ACTIVE_HIGH>
-            , <&gpio0 11 GPIO_ACTIVE_HIGH>
-            ;
-        row-gpios
-            = <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio1 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio1 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            ;
+        col-gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>,
+                    <&gpio0 8 GPIO_ACTIVE_HIGH>,
+                    <&gpio1 0 GPIO_ACTIVE_HIGH>;
+        row-gpios = <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                    <&gpio1 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                    <&gpio1 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                    <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>,
+                    <&gpio0 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>;
     };
-  
-    /* 3.2 触摸按键扫描定义 (假设 AI04 输出高/低电平信号给主控引脚) */
+
     kscan_touch: kscan_touch {
         compatible = "zmk,kscan-gpio-direct";
-        input-gpios
-            = <&gpio0 17 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 22 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&gpio0 24 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            ;
+        input-gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+                      <&gpio0 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+                      <&gpio0 22 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>,
+                      <&gpio0 24 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
     };
-  
-    /* * 4. EC11 旋钮编码器
-     */
+
+    /* 4. EC11 旋钮（保留你最新的引脚） */
     encoder_0: encoder_0 {
         compatible = "alps,ec11";
-        /* ⚠️ 需要修改：填入旋钮 A相 和 B相 对应的引脚 */
         a-gpios = <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         b-gpios = <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        steps = <80>; /* 根据你的 EC11 规格调整，通常是 80 或 72 */
+        steps = <80>;
     };
 
     sensors {
@@ -122,14 +101,9 @@
         sensors = <&encoder_0>;
     };
 
-    /*
-     * 5. Xbox 霍尔摇杆 (ADC 模拟量输入)
-     * 坦白说，ZMK 官方主线目前对“摇杆映射为鼠标”的支持还在开发中。
-     * 你通常需要开启 ZMK 的 pointing 功能模块，并配置 ADC 设备节点。
-     */
+    /* 5. 摇杆（保留 dtsi 里的基础定义，overlay 里再增强） */
     joystick: joystick {
         compatible = "zmk,analog-input";
-        /* ⚠️ 需要修改：填入连接摇杆 X轴和 Y轴的模拟输入引脚 (如 A0, A1) */
         io-channels = <&adc 0>, <&adc 5>;
     };
 };
