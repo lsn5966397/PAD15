@@ -6,14 +6,13 @@
 
 / {
     chosen {
-        zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,kscan = &kscan;
+        zmk,matrix_transform = &transform;
         zmk,underglow = &led_strip;
     };
 
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
-    
         diode-direction = "col2row";
         col-gpios
             = <&gpio0 6 GPIO_ACTIVE_HIGH>
@@ -30,7 +29,7 @@
             ;
     };
     
-    default_transform: keymap_transform_0 {
+    transform: keymap_transform {
         compatible = "zmk,matrix-transform";
         columns = <4>;
         rows = <9>;   
