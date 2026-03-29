@@ -6,7 +6,7 @@
 
 / {
     chosen {
-        zmk,kscan = &kscan;
+        zmk,kscan = &kscan0;
         zmk,matrix_transform = &transform;
         zmk,underglow = &led_strip;
     };
