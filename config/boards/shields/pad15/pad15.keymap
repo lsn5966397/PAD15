@@ -60,10 +60,10 @@
             bindings = <
                 &kp DEL     &kp HOME    &kp END      &kp C_MUTE
                 &kp N7      &kp N8      &kp N9       &mkp LCLK
-                &kp N4      &kp N5      &kp N6       &msc SCRL_UP
-                &kp N1      &kp N2      &kp N3       &msc SCRL_UP
-                &kp N0      &kp DOT     &kp PS       &msc SCRL_DOWN
-                                                    &msc SCRL_DOWN
+                &kp N4      &kp N5      &kp N6       
+                &kp N1      &kp N2      &kp N3      
+                &kp N0      &kp DOT     &kp PS       
+                                                    
             >;
         };
 
@@ -72,10 +72,10 @@
             bindings = <
                 &kp K_LOCK  &bl BL_INC  &bl BL_DEC  &kp C_MUTE
                 &kp F7      &kp F8      &kp F9      &mkp LCLK
-                &kp F4      &kp F5      &kp F6      &msc SCRL_UP
-                &kp F1      &kp F2      &kp F3      &msc SCRL_UP
-                &kp F10     &kp F11     &kp F12     &msc SCRL_DOWN
-                                                   &msc SCRL_DOWN
+                &kp F4      &kp F5      &kp F6      
+                &kp F1      &kp F2      &kp F3      
+                &kp F10     &kp F11     &kp F12     
+                                                   
             >;
         };
 
@@ -84,10 +84,10 @@
             bindings = <
                 &trans      &trans      &trans      &trans
                 &trans      &double_tap_up &trans   &trans
-                &kp LEFT    &kp DOWN    &kp RIGHT   &msc SCRL_UP
-                &kp LCTRL   &trans      &kp LALT    &msc SCRL_UP
-                &trans      &trans      &kp SPACE   &msc SCRL_DOWN
-                                                   &msc SCRL_DOWN
+                &kp LEFT    &kp DOWN    &kp RIGHT   
+                &kp LCTRL   &trans      &kp LALT    
+                &trans      &trans      &kp SPACE   
+                                                   
             >;
         };
         /* === ZMK Studio 必须的保留层 === */
