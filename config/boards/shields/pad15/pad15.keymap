@@ -21,19 +21,19 @@
 
         change_layer {
             bindings = <&to 0>;
-            key-positions = <14 16>;
+            key-positions = <8 10>;
             layers = <2>;
         };
 
         change_layer1 {
             bindings = <&to 1>;
-            key-positions = <14 16>;
+            key-positions = <8 10>;
             layers = <0>;
         };
 
         change_layer2 {
             bindings = <&to 2>;
-            key-positions = <14 16>;
+            key-positions = <8 10>;
             layers = <1>;
         };
     };
@@ -59,10 +59,10 @@
             //sensor-bindings = <&EC11_ROTATE>;
             bindings = <
                 &kp DEL     &kp HOME    &kp END      &kp C_MUTE
-                &kp N7      &kp N8      &kp N9       &mkp LCLK
-                &kp N4      &kp N5      &kp N6       &none
-                &kp N1      &kp N2      &kp N3       &none
-                &kp N0      &kp DOT     &kp PRINTSCREEN       &none
+                &kp KP_NUMBER_7      &kp KP_NUMBER_8      &kp KP_NUMBER_9       &mkp LCLK
+                &kp KP_NUMBER_4      &kp KP_NUMBER_5      &kp KP_NUMBER_6      &none
+                &kp KP_NUMBER_1      &kp KP_NUMBER_2      &kp KP_NUMBER_3       &none
+                &kp KP_NUMBER_0      &kp DOT     &kp PRINTSCREEN       &none
             >;
         };
 
