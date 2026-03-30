@@ -17,9 +17,11 @@
         keys = <&key_physical_attrs 100 100    0    0       0     0     0>
                , <&key_physical_attrs 100 100  100    0       0     0     0>
                , <&key_physical_attrs 100 100  200    0       0     0     0>
+               , <&key_physical_attrs 100 100  300    0       0     0     0>
                , <&key_physical_attrs 100 100    0  100       0     0     0>
                , <&key_physical_attrs 100 100  100  100       0     0     0>
                , <&key_physical_attrs 100 100  200  100       0     0     0>
+               , <&key_physical_attrs 100 100  300  100       0     0     0>
                , <&key_physical_attrs 100 100    0  200       0     0     0>
                , <&key_physical_attrs 100 100  100  200       0     0     0>
                , <&key_physical_attrs 100 100  200  200       0     0     0>
@@ -29,6 +31,7 @@
                , <&key_physical_attrs 100 100    0  400       0     0     0>
                , <&key_physical_attrs 100 100  100  400       0     0     0>
                , <&key_physical_attrs 100 100  200  400       0     0     0>
+
                /* 4 个触摸键（第四列） */
                , <&key_physical_attrs 100 100  300  300       0     0     0>
                , <&key_physical_attrs 100 100  300  400       0     0     0>
@@ -37,10 +40,10 @@
                ;
     };
 
-    /* 2. 矩阵转换（5行4列，最干净） */
+    /* 2. 矩阵转换 */
         transform: matrix_transform {
         compatible = "zmk,matrix-transform";
-        rows = <5>;
+        rows = <6>;
         columns = <4>;
 
         map = <
@@ -48,7 +51,8 @@
             RC(1,0) RC(1,1) RC(1,2) RC(1,3)
             RC(2,0) RC(2,1) RC(2,2) RC(2,3)
             RC(3,0) RC(3,1) RC(3,2) RC(3,3)
-            RC(4,0) RC(4,1) RC(4,2) RC(255,255)
+            RC(4,0) RC(4,1) RC(4,2) RC(4,3)
+                                    RC(5,3)
         >;
     };
 
@@ -61,8 +65,8 @@
 
         touch {
             kscan = <&kscan_touch>;
-            row-offset = <0>;
-            col-offset = <3>;   /* 4个触摸键放在第4列 */
+            row-offset = <5>;
+            col-offset = <4>;   /* 4个触摸键放在第4列 */
         };
     };
 
