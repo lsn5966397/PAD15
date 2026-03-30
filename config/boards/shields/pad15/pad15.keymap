@@ -56,7 +56,7 @@
         compatible = "zmk,keymap";
 
         office {
-            sensor-bindings = <&EC11_ROTATE>;
+            //sensor-bindings = <&EC11_ROTATE>;
             bindings = <
                 &kp DEL     &kp HOME    &kp END      &kp C_MUTE
                 &kp N7      &kp N8      &kp N9       &mkp LCLK
@@ -67,7 +67,7 @@
         };
 
         function {
-            sensor-bindings = <&EC11_ROTATE>;
+            //sensor-bindings = <&EC11_ROTATE>;
             bindings = <
                 &kp K_LOCK  &bl BL_INC  &bl BL_DEC  &kp C_MUTE
                 &kp F7      &kp F8      &kp F9      &mkp LCLK
@@ -78,7 +78,7 @@
         };
 
         game {
-            sensor-bindings = <&EC11_ROTATE>;
+            //sensor-bindings = <&EC11_ROTATE>;
             bindings = <
                 &trans      &bt BT_CLR    &bootloader    &trans
                 &trans      &double_tap_up &trans   &trans
