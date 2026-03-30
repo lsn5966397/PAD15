@@ -10,11 +10,11 @@
     zmk,underglow = &led_strip;
 };
 
-	/* 开启 ADC（摇杆用） */
+	/* 开启 ADC（摇杆用） 
 	&adc {
 	    status = "okay";
 	};
-
+*/
     /* 3. 复合 kscan */
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-matrix";
