@@ -1,15 +1,13 @@
 # pad15
-这是一个带有旋钮、摇杆和触摸板的有线蓝牙双模多功能小键盘项目，基于ZMK框架编写
+这是一个带有旋钮、摇杆和触摸板的有线蓝牙双模多功能小键盘项目，基于ZMK框架v0.3版本开发。
 
-This is a wireless dual-mode multifunction mini-keyboard project with EC11 knob XBOX joystick and a 4 channels touchpad. Coding based on ZMK firmware.
+This is a wireless dual-mode multifunction mini-keyboard project with EC11 knob XBOX joystick and a 4 channels touchpad. Coding based on ZMK firmware v0.3.
 
 <img width="767" height="729" alt="image" src="https://github.com/user-attachments/assets/d6e857e1-50d8-4e14-8bf3-5f4a70986501" />
 
 # ZMK编写
 
 本文的内容具有时效性，以本文最后的编辑时间为准。
-
-项目使用zmk v0.3版本开发。
 
 将买来的promicro（supermini） nrf52840 开发板直接接到电脑上，原有的tf2文件是基于C++的，现在我们将着手编译ZMK框架的tf2文件，做好以后直接放入开发板对应的存储设备，可以自动完成烧录，非常方便。
 
