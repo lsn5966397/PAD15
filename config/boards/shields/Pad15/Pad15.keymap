@@ -20,21 +20,21 @@
         compatible = "zmk,combos";
 
         change_layer {
-            bindings = <&tog 0>;
+            bindings = <&to 0>;
             key-positions = <2 14>;
             timeout-ms = <150>;
             layers = <2>;
         };
 
         change_layer1 {
-            bindings = <&tog 1>;
+            bindings = <&to 1>;
             key-positions = <2 14>;
             timeout-ms = <150>;
             layers = <0>;
         };
 
         change_layer2 {
-            bindings = <&tog 2>;
+            bindings = <&to 2>;
             key-positions = <2 14>;
             timeout-ms = <150>;
             layers = <1>;
