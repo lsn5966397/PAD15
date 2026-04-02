@@ -1,7 +1,7 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 #include <dt-bindings/led/led.h>
 #include <dt-bindings/pinctrl/nrf-pinctrl.h>
-#include "pad15.dtsi"
+#include "Pad15.dtsi"
 
 /{
     chosen {
@@ -79,6 +79,15 @@
 };
 
 
+/ {
+    chosen {
+        zmk,battery = &vbatt;   /* 告诉 ZMK 用这个电池传感器 */
+    };
 
+    vbatt: vbatt {
+        compatible = "zmk,battery-nrf-vddh";   /* 关键！用 nRF52840 内置 VDDH 传感器 */
+        label = "BATTERY";
+    };
+};
 
 
