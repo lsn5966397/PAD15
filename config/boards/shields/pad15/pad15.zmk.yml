@@ -1,9 +1,0 @@
-file_format: "1"
-id: pad15
-name: pad15
-type: shield
-url: https://github.com/lsn5966397/PAD15/edit/main/config/pad15.yml
-requires: [nice_nano_v2]
-features:
-
-  - keys
