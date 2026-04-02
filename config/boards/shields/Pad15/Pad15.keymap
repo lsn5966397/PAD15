@@ -81,7 +81,7 @@
             //sensor-bindings = <&EC11_ROTATE>;
             bindings = <
                 &kp K_LOCK  &trans        &trans    &kp C_MUTE
-                &trans      &double_tap_up &trans   &trans
+                &trans      &kp UP        &trans   &trans
                 &kp LEFT    &kp DOWN    &kp RIGHT   &none
                 &kp LCTRL   &trans      &kp LALT    &none
                 &trans      &trans      &kp SPACE   &none
