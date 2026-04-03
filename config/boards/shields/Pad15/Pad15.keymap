@@ -6,7 +6,7 @@
 #include <dt-bindings/zmk/mouse.h> // 鼠标控制字典
 #include <dt-bindings/zmk/rgb.h>        // RGB 灯效控制
 #include <dt-bindings/zmk/outputs.h>    // 输出切换 (USB/BLE)
-#include <dt-bindings/zmk/pointing.h>   /* 鼠标滚轮模拟*/
+#include <dt-bindings/zmk/pointing.h>   /* 鼠标模拟*/
 #include <dt-bindings/zmk/backlight.h>  //背光控制
 
 
@@ -42,12 +42,23 @@
         BOOTLOADER {
             bindings = <&bootloader>;
             key-positions = <0 2 14 16>;
-            timeout-ms = <150>;
+            timeout-ms = <200>;
         };
         BTCLR {
             bindings = <&bt BT_CLR>;
             key-positions = <2 14 16>;
-            timeout-ms = <150>;
+            timeout-ms = <200>;
+        };
+    };
+
+    behaviors {
+        tap_hold: tap_hold {
+            compatible = "zmk,behavior-hold-tap";
+            label = "TAP_HOLD";
+            bindings = <&kp>, <&kp>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <600>;
         };
     };
 
@@ -55,18 +66,18 @@
         compatible = "zmk,keymap";
         office {
             bindings = <
-                &kp DEL     &kp HOME    &kp END      &kp C_MUTE
+                &kp DEL     &tap_hold HOME C_PREVIOUS  &tap_hold END C_NEXT      &tap_hold C_MUTE C_PLAY_PAUSE
                 &kp KP_NUMBER_7      &kp KP_NUMBER_8      &kp KP_NUMBER_9       &mkp LCLK
                 &kp KP_NUMBER_4      &kp KP_NUMBER_5      &kp KP_NUMBER_6      &none
                 &kp KP_NUMBER_1      &kp KP_NUMBER_2      &kp KP_NUMBER_3       &none
-                &kp KP_NUMBER_0      &kp DOT     &kp PRINTSCREEN       &none
+                &kp KP_NUMBER_0      &kp PERIOD     &kp PRINTSCREEN       &none
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;   /* 绑定写在这里才能生效，顺时针音量加，逆时针音量减 */
         };
 
         function {
             bindings = <
-                &rgb_ug RGB_TOG  &rgb_ug RGB_EFF  &kp K_LOCK  &kp C_MUTE
+                &rgb_ug RGB_TOG  &rgb_ug RGB_EFF  &kp K_SCREENSAVER  &kp C_MUTE
                 &kp F7      &kp F8      &kp F9      &mkp LCLK
                 &kp F4      &kp F5      &kp F6      &none
                 &kp F1      &kp F2      &kp F3      &none
