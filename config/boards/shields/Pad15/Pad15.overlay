@@ -105,3 +105,44 @@
         triggers-per-rotation = <80>; 
     };
 };
+
+/* 开启主控的 ADC 节点 */
+&adc {
+    status = "okay";
+};
+
+/* 霍尔摇杆 → 鼠标指针 */
+/ {
+    joystick: analog_joystick {
+        compatible = "zmk,pointing-analog-joystick";
+        sampling-hz = <100>;
+
+        /* 配置 X 轴对应的 ADC 通道 */
+        x-ch {
+            io-channels = <&adc 0>;
+            mv-mid = <1650>;
+            mv-min-max = <1600>;
+        	/* 摇杆盲区 (Deadzone)，防止手松开时鼠标自己飘 */
+        	/* 值范围通常是 0-100 或根据具体驱动设定的阈值，建议先给个 10 测试 */
+            mv-deadzone = <10>;
+            scale-multiplier = <1>;
+            scale-divisor = <60>;
+        	invert; /* 如果发现左右反了，取消注释这行；或者加这行来反转 */
+            evt-type = <INPUT_EV_REL>;
+            input-code = <INPUT_REL_X>;
+        };
+        /* 配置 Y 轴对应的 ADC 通道 */
+        y-ch {
+            io-channels = <&adc 5>;
+            mv-mid = <1650>;
+            mv-min-max = <1600>;
+            mv-deadzone = <10>;
+            scale-multiplier = <1>;
+            scale-divisor = <60>;
+        	invert; /* 如果发现上下反了，用这个反转 */
+            evt-type = <INPUT_EV_REL>;
+            input-code = <INPUT_REL_Y>;
+            report-on-change-only;
+        };
+    };
+};
