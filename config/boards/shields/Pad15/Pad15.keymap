@@ -69,7 +69,7 @@
                 &kp KP_NUMBER_7      &kp KP_NUMBER_8      &kp KP_NUMBER_9       &mkp LCLK        &kp KP_NUMBER_6
                 &kp KP_NUMBER_4      &kp KP_NUMBER_5      &kp KP_NUMBER_6      &none        &kp KP_NUMBER_6
                 &kp KP_NUMBER_1      &kp KP_NUMBER_2      &kp KP_NUMBER_3       &none        &kp KP_NUMBER_6
-                &kp KP_NUMBER_0      &kp PERIOD     &kp PRINTSCREEN       &none        &none
+                &kp KP_NUMBER_0      &kp PERIOD     &kp PRINTSCREEN       &none        
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;   /* 绑定写在这里才能生效，顺时针音量加，逆时针音量减 */
         };
@@ -80,7 +80,7 @@
                 &kp F7      &kp F8      &kp F9      &mkp LCLK        &msc SCRL_UP
                 &kp F4      &kp F5      &kp F6      &none        &msc SCRL_DOWN
                 &kp F1      &kp F2      &kp F3      &none        &msc SCRL_DOWN
-                &kp F10     &kp F11     &kp F12     &none        &none
+                &kp F10     &kp F11     &kp F12     &none        
             >;
         };
 
@@ -90,7 +90,7 @@
                 &none           &kp UP             &none           &mkp LCLK        &msc SCRL_UP
                 &kp LEFT        &kp DOWN           &kp RIGHT       &none        &msc SCRL_DOWN
                 &kp LEFT_SHIFT  &none              &kp LALT        &none        &msc SCRL_DOWN
-                &kp LCTRL       &none              &kp SPACE       &none        &none
+                &kp LCTRL       &none              &kp SPACE       &none        
             >;
         };
         /* === ZMK Studio 必须的保留层 === */
