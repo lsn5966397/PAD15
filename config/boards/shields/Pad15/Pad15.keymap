@@ -70,9 +70,9 @@
                 &kp KP_NUMBER_1      &kp KP_NUMBER_2      &kp KP_NUMBER_3       &none
                 &kp KP_NUMBER_0      &kp PERIOD     &kp PRINTSCREEN       &none
             >;
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>   /* 绑定写在这里才能生效，顺时针音量加，逆时针音量减 */
-                              <&mouse_move 1 0>                 /* ← X 轴移动 */
-                              <&mouse_move 0 1>;                /* ← Y 轴移动 */
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>,   /* 绑定写在这里才能生效，顺时针音量加，逆时针音量减 */
+                              <&mouse_move 1 0>,                 /* ← X 轴移动 */
+                              <&mouse_move 0 1>;                 /* ← Y 轴移动 */
         };
 
         function {
