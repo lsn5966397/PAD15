@@ -4,86 +4,107 @@
 #include <zmk/event_manager.h>
 #include <zmk/events/layer_state_changed.h>
 #include <zmk/events/battery_state_changed.h>
+#include <zmk/events/keycode_state_changed.h> // 新增：用于监听按键
 
-/* 定义灯带节点和数量 */
 #define STRIP_NODE DT_CHOSEN(zmk_underglow)
 #define NUM_PIXELS 16
-#define STATUS_LED_IDX 15 // 第 16 个灯（数组索引从 0 开始）
+#define STATUS_LED_IDX 15
 
 static const struct device *led_strip = DEVICE_DT_GET(STRIP_NODE);
 static struct led_rgb pixels[NUM_PIXELS];
 
-/* 定义全局状态变量 */
 static uint8_t current_layer = 0;
 static uint8_t battery_level = 100;
-static bool is_blinking = false;
+static int status_display_frames = 0;
 
-/* 声明一个延时工作队列（用于处理 1 秒后熄灭和闪烁） */
-struct k_work_delayable status_led_work;
+// 新增：灯效模式状态 (0: 彩虹, 1: 纯色呼吸, 2: 常亮熄灭)
+static uint8_t current_effect = 0; 
+#define MAX_EFFECTS 3
 
-/* =======================================
- * 核心执行逻辑：刷新灯带状态
- * ======================================= */
-static void update_status_led(struct k_work *work) {
-    if (!device_is_ready(led_strip)) {
-        return;
-    }
-
-    // 1. 低电量优先处理 (例如低于 20% 快速闪烁红灯)
-    if (battery_level < 20) {
-        if (is_blinking) {
-            pixels[STATUS_LED_IDX].r = 0x00; // 灭
-        } else {
-            pixels[STATUS_LED_IDX].r = 0xFF; // 纯红
-            pixels[STATUS_LED_IDX].g = 0x00;
-            pixels[STATUS_LED_IDX].b = 0x00;
-        }
-        is_blinking = !is_blinking;
-        // 每 300 毫秒执行一次，实现快闪
-        k_work_reschedule(&status_led_work, K_MSEC(300)); 
-        led_strip_update_rgb(led_strip, pixels, NUM_PIXELS);
-        return;
-    }
-
-    // 2. 正常切层显示逻辑
-    // 默认先全部清零（熄灭）
-    pixels[STATUS_LED_IDX].r = 0;
-    pixels[STATUS_LED_IDX].g = 0;
-    pixels[STATUS_LED_IDX].b = 0;
-
-    // 如果 is_blinking 为 true，说明是刚刚切层，我们需要亮起颜色
-    if (is_blinking) {
-        switch (current_layer) {
-            case 0: // Base 层：白色
-                pixels[STATUS_LED_IDX].r = 0x80;
-                pixels[STATUS_LED_IDX].g = 0x80;
-                pixels[STATUS_LED_IDX].b = 0x80;
-                break;
-            case 1: // 第 1 层：蓝色
-                pixels[STATUS_LED_IDX].r = 0x00;
-                pixels[STATUS_LED_IDX].g = 0x00;
-                pixels[STATUS_LED_IDX].b = 0xFF;
-                break;
-            case 2: // 第 2 层：绿色
-                pixels[STATUS_LED_IDX].r = 0x00;
-                pixels[STATUS_LED_IDX].g = 0xFF;
-                pixels[STATUS_LED_IDX].b = 0x00;
-                break;
-            default: // 其他层：紫色
-                pixels[STATUS_LED_IDX].r = 0xFF;
-                pixels[STATUS_LED_IDX].g = 0x00;
-                pixels[STATUS_LED_IDX].b = 0xFF;
-                break;
-        }
-        is_blinking = false; // 标记下次执行时熄灭
-        
-        // 1秒后重新执行这个函数，将其熄灭
-        k_work_reschedule(&status_led_work, K_SECONDS(1)); 
-    }
-
-    // 将数据发送给硬件
-    led_strip_update_rgb(led_strip, pixels, NUM_PIXELS);
+// HSV 转 RGB 算法... (和之前一样)
+static struct led_rgb wheel(uint8_t pos) {
+    pos = 255 - pos;
+    if (pos < 85) return (struct led_rgb){255 - pos * 3, 0, pos * 3};
+    else if (pos < 170) { pos -= 85; return (struct led_rgb){0, pos * 3, 255 - pos * 3}; }
+    else { pos -= 170; return (struct led_rgb){pos * 3, 255 - pos * 3, 0}; }
 }
+
+// 核心动画线程
+void custom_led_thread_main(void) {
+    if (!device_is_ready(led_strip)) return;
+
+    uint8_t tick = 0; 
+
+    while (1) {
+        // ==========================================
+        // 1. 渲染前 15 颗灯：根据 current_effect 切换逻辑
+        // ==========================================
+        for (int i = 0; i < STATUS_LED_IDX; i++) {
+            if (current_effect == 0) {
+                // 特效 0：流动彩虹
+                pixels[i] = wheel((uint8_t)(tick + i * 15));
+            } 
+            else if (current_effect == 1) {
+                // 特效 1：蓝色呼吸 (利用三角函数或简单的折返逻辑)
+                // tick 从 0-255 循环，我们做一个简单的亮度渐变
+                uint8_t brightness = (tick < 128) ? (tick * 2) : ((255 - tick) * 2);
+                pixels[i] = (struct led_rgb){0, 0, brightness}; 
+            }
+            else {
+                // 特效 2：全部熄灭 (省电模式)
+                pixels[i] = (struct led_rgb){0, 0, 0};
+            }
+        }
+
+        // ==========================================
+        // 2. 渲染第 16 颗灯：状态覆盖逻辑 (不可侵犯的绝对优先级)
+        // ==========================================
+        if (battery_level < 20) {
+            if (tick % 10 < 5) pixels[STATUS_LED_IDX] = (struct led_rgb){0xFF, 0x00, 0x00};
+            else pixels[STATUS_LED_IDX] = (struct led_rgb){0, 0, 0};
+        } 
+        else if (status_display_frames > 0) {
+            switch (current_layer) {
+                case 0: pixels[STATUS_LED_IDX] = (struct led_rgb){0x80, 0x80, 0x80}; break;
+                case 1: pixels[STATUS_LED_IDX] = (struct led_rgb){0x00, 0x00, 0xFF}; break;
+                case 2: pixels[STATUS_LED_IDX] = (struct led_rgb){0x00, 0xFF, 0x00}; break;
+                default: pixels[STATUS_LED_IDX] = (struct led_rgb){0xFF, 0x00, 0xFF}; break;
+            }
+            status_display_frames--;
+        } 
+        else {
+            // 正常状态下，第 16 颗灯也可以跟着变，或者保持熄灭
+            pixels[STATUS_LED_IDX] = (struct led_rgb){0, 0, 0}; 
+        }
+
+        led_strip_update_rgb(led_strip, pixels, NUM_PIXELS);
+        tick++;
+        k_sleep(K_MSEC(30)); 
+    }
+}
+K_THREAD_DEFINE(custom_led_tid, 1024, custom_led_thread_main, NULL, NULL, NULL, 7, 0, 0);
+
+// ==========================================
+// 新增事件监听器：监听按键切换灯效
+// ==========================================
+static int keycode_listener(const zmk_event_t *eh) {
+    const struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
+    
+    // 如果有按键被按下 (ev->state 为 true)
+    if (ev && ev->state) {
+        // 假设我们用 F20 这个键来作为切换键 
+        // (HID Usage ID: 0x6D 就是 F20)
+        if (ev->keycode == 0x6D) { 
+            current_effect++;
+            if (current_effect >= MAX_EFFECTS) {
+                current_effect = 0;
+            }
+        }
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+ZMK_LISTENER(keycode_status, keycode_listener);
+ZMK_SUBSCRIPTION(keycode_status, zmk_keycode_state_changed);
 
 /* =======================================
  * 事件监听器：层切换
