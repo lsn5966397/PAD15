@@ -76,7 +76,7 @@
 
         function {
             bindings = <
-                &rgb_ug RGB_TOG  &rgb_ug RGB_EFF  &kp K_SCREENSAVER  &kp C_MUTE        &msc SCRL_UP
+                &rgb_ug RGB_TOG  &kp F15  &kp K_SCREENSAVER  &kp C_MUTE        &msc SCRL_UP
                 &kp F7      &kp F8      &kp F9      &mkp LCLK        &msc SCRL_UP
                 &kp F4      &kp F5      &kp F6      &none        &msc SCRL_DOWN
                 &kp F1      &kp F2      &kp F3      &none        &msc SCRL_DOWN
