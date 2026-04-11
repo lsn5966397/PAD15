@@ -65,10 +65,6 @@
         spi-one-frame = <0x70>;
         spi-zero-frame = <0x40>;
         color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
-
-        /* ==========================================
-         * 使用 1U=100 的绝对物理坐标进行精确映射
-         * ========================================== */
          
         /* 第一排 (y = 0) */
         led0: led_0 { x = <0>;   y = <0>; };
