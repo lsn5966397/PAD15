@@ -6,7 +6,7 @@
     chosen {
         zmk,kscan = &kscan0;
         zmk,physical-layout = &layout;
-        zmk,underglow = &led_strip;
+        zmk,underglow = &pad15_leds;
     };
 
     /* 1. 物理布局（visualizer 用） */
@@ -43,10 +43,19 @@
     };
 };
 
+&spi1 {
+    status = "okay";
+    /* 将标签从 led_strip 改为 pad15_leds */
+    pad15_leds: ws2812@0 { 
+        compatible = "worldsemi,ws2812-spi";
+        label = "WS2812";
+        /* ... 保持里面的参数和坐标点不变 ... */
+    };
+};
 /* 定义底层物理灯带 */
 &spi1 {
     status = "okay";
-    led_strip: ws2812@0 {
+    pad15_leds: ws2812@0 {
         compatible = "worldsemi,ws2812-spi";
         label = "WS2812";
         reg = <0>;
@@ -63,28 +72,28 @@
          
         /* 第一排 (y = 0) */
         led0: led_0 { x = <0>;   y = <0>; };
-        led1: led_1 { x = <100>; y = <0>; };
-        led2: led_2 { x = <200>; y = <0>; };
+        led1: led_1 { x = <10>; y = <0>; };
+        led2: led_2 { x = <20>; y = <0>; };
         
-        /* 第二排 (y = 100) */
-        led3: led_3 { x = <0>;   y = <100>; };
-        led4: led_4 { x = <100>; y = <100>; };
-        led5: led_5 { x = <200>; y = <100>; };
+        /* 第二排 (y = 10) */
+        led3: led_3 { x = <0>;   y = <10>; };
+        led4: led_4 { x = <10>; y = <10>; };
+        led5: led_5 { x = <20>; y = <10>; };
         
-        /* 第三排 (y = 200) + 特殊的第 16 颗灯 */
-        led6: led_6 { x = <0>;   y = <200>; };
-        led7: led_7 { x = <100>; y = <200>; };
-        led8: led_8 { x = <200>; y = <200>; };
-        led15: led_15 { x = <300>; y = <200>; }; /* 第 16 颗：第三行第四列 */
+        /* 第三排 (y = 20) + 特殊的第 16 颗灯 */
+        led6: led_6 { x = <0>;   y = <20>; };
+        led7: led_7 { x = <10>; y = <20>; };
+        led8: led_8 { x = <20>; y = <20>; };
+        led15: led_15 { x = <30>; y = <20>; }; /* 第 16 颗：第三行第四列 */
         
-        /* 第四排 (y = 300) */
-        led9:  led_9  { x = <0>;   y = <300>; };
-        led10: led_10 { x = <100>; y = <300>; };
-        led11: led_11 { x = <200>; y = <300>; };
+        /* 第四排 (y = 30) */
+        led9:  led_9  { x = <0>;   y = <30>; };
+        led10: led_10 { x = <10>; y = <30>; };
+        led11: led_11 { x = <20>; y = <30>; };
         
         /* 第五排 (y = 400) */
-        led12: led_12 { x = <0>;   y = <400>; };
-        led13: led_13 { x = <100>; y = <400>; };
-        led14: led_14 { x = <200>; y = <400>; };
+        led12: led_12 { x = <0>;   y = <40>; };
+        led13: led_13 { x = <10>; y = <40>; };
+        led14: led_14 { x = <20>; y = <40>; };
     };
 };
