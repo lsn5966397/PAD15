@@ -1,16 +1,22 @@
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/led_strip.h>
-#include <stdlib.h> // 提供 abs()
+#include <stdlib.h> 
+
 #include <zmk/event_manager.h>
 #include <zmk/events/layer_state_changed.h>
 #include <zmk/events/battery_state_changed.h>
 #include <zmk/events/keycode_state_changed.h>
+// 新增：引入活动状态事件，用于休眠检测
+#include <zmk/events/activity_state_changed.h> 
+#include <zmk/activity.h> 
 
 #define STRIP_NODE DT_CHOSEN(zmk_underglow)
 #define NUM_PIXELS 16
 #define STATUS_LED_IDX 15
 #define MAX_EFFECTS 3
+// 限定最大亮度
+#define BRIGHTNESS_PERCENT 30 
 
 static const struct device *led_strip = DEVICE_DT_GET(STRIP_NODE);
 static struct led_rgb pixels[NUM_PIXELS];
@@ -19,6 +25,9 @@ static uint8_t current_layer = 0;
 static uint8_t battery_level = 100;
 static int status_display_frames = 0; 
 static uint8_t current_effect = 0; 
+
+// 新增：记录键盘是否处于活动状态（默认开机是活动的）
+static bool is_awake = true; 
 
 // ==========================================
 // 1.  uint8_t 二维坐标表
@@ -37,7 +46,6 @@ static const struct led_coord coords[NUM_PIXELS] = {
     {30, 20}                        // 第 16 颗 (状态灯)
 };
 
-// HSV 转 RGB 算法
 static struct led_rgb wheel(uint8_t pos) {
     pos = 255 - pos;
     if (pos < 85) return (struct led_rgb){255 - pos * 3, 0, pos * 3};
@@ -54,36 +62,42 @@ void custom_led_thread_main(void) {
     uint32_t tick = 0; 
 
     while (1) {
+        // 【核心新增】：如果键盘休眠了，直接全黑并大幅降低线程频率省电
+        if (!is_awake) {
+            for (int i = 0; i < NUM_PIXELS; i++) {
+                pixels[i] = (struct led_rgb){0, 0, 0};
+            }
+            led_strip_update_rgb(led_strip, pixels, NUM_PIXELS);
+            
+            // 休眠时不需要 30ms 跑一次，500ms 检查一次足矣，极大省电
+            k_sleep(K_MSEC(500)); 
+            continue; // 跳过下面的所有计算，直接进入下一次循环
+        }
+
         // --- 渲染前 15 颗矩阵灯 ---
         for (int i = 0; i < STATUS_LED_IDX; i++) {
             uint8_t cx = coords[i].x;
             uint8_t cy = coords[i].y;
 
             if (current_effect == 0) {
-                // 【特效 0：X轴彩虹波浪】
-                // 因为 cx 只有 0, 10, 20, 30... 直接加到 tick 上就形成极佳的色差阶梯
                 pixels[i] = wheel((uint8_t)(tick * 2 + (cx * 2)));
             } 
             else if (current_effect == 1) {
-                // 【特效 1：Y轴雷达扫描线】
-                // 坐标变小了，扫描参数同步调整：循环范围 0~60
                 int scanline_y = (tick % 60); 
                 int distance = abs(scanline_y - cy);
-                
-                if (distance < 12) { // 光晕宽度控制在 12
-                    uint8_t intensity = 255 - (distance * 20); // 距离越近越亮
-                    pixels[i] = (struct led_rgb){0, intensity, intensity / 2}; // 青蓝色
+                if (distance < 12) {
+                    uint8_t intensity = 255 - (distance * 20); 
+                    pixels[i] = (struct led_rgb){0, intensity, intensity / 2}; 
                 } else {
                     pixels[i] = (struct led_rgb){0, 0, 0}; 
                 }
             }
             else {
-                // 【特效 2：全部熄灭】
                 pixels[i] = (struct led_rgb){0, 0, 0};
             }
         }
 
-        // --- 渲染第 16 颗状态灯 (优先级不变) ---
+        // --- 渲染第 16 颗状态灯 ---
         if (battery_level < 20) {
             if (tick % 30 < 15) pixels[STATUS_LED_IDX] = (struct led_rgb){0xFF, 0x00, 0x00};
             else pixels[STATUS_LED_IDX] = (struct led_rgb){0, 0, 0};
@@ -100,7 +114,14 @@ void custom_led_thread_main(void) {
         else {
             pixels[STATUS_LED_IDX] = (struct led_rgb){0, 0, 0}; 
         }
-
+        
+        // 全局亮度压制
+        for (int i = 0; i < NUM_PIXELS; i++) {
+            pixels[i].r = (pixels[i].r * BRIGHTNESS_PERCENT) / 100;
+            pixels[i].g = (pixels[i].g * BRIGHTNESS_PERCENT) / 100;
+            pixels[i].b = (pixels[i].b * BRIGHTNESS_PERCENT) / 100;
+        }
+                
         led_strip_update_rgb(led_strip, pixels, NUM_PIXELS);
         tick++;
         k_sleep(K_MSEC(30)); 
@@ -111,10 +132,27 @@ K_THREAD_DEFINE(custom_led_tid, 1024, custom_led_thread_main, NULL, NULL, NULL, 
 // ==========================================
 // 3. 事件监听器
 // ==========================================
+
+// 【核心新增】：活动状态监听器
+static int activity_listener(const zmk_event_t *eh) {
+    const struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
+    if (ev) {
+        if (ev->state == ZMK_ACTIVITY_ACTIVE) {
+            is_awake = true;  // 键盘被唤醒（敲击键盘时触发）
+        } else {
+            // ZMK_ACTIVITY_IDLE (空闲) 或 ZMK_ACTIVITY_SLEEP (深度休眠)
+            is_awake = false; 
+        }
+    }
+    return ZMK_EV_EVENT_BUBBLE;
+}
+ZMK_LISTENER(activity_status, activity_listener);
+ZMK_SUBSCRIPTION(activity_status, zmk_activity_state_changed);
+
+
 static int keycode_listener(const zmk_event_t *eh) {
     const struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
     if (ev && ev->state) {
-        // F15 的键码 0x6A
         if (ev->keycode == 0x6A) { 
             current_effect++;
             if (current_effect >= MAX_EFFECTS) current_effect = 0;
