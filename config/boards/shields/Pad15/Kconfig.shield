@@ -3,3 +3,4 @@
 
 config SHIELD_PAD15
     def_bool $(shields_list_contains,Pad15)
+source "$(ZMK_CONFIG)/modules/custom_led/Kconfig"
