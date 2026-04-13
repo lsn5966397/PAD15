@@ -6,8 +6,5 @@ include:
     cmake-args: >-
       -DZMK_EXTRA_MODULES="/__w/Pad15/Pad15/config/modules/custom_led"
       -DCONFIG_ZMK_STUDIO=y
-      -DCONFIG_LED_STRIP=y
-      -DCONFIG_LED_STRIP_WS2812_SPI=y
-      -DCONFIG_SPI=y
   - board: nice_nano
     shield: settings_reset
