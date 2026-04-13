@@ -15,21 +15,25 @@
         display-name = "Pad15";
         transform = <&transform>;
         kscan = <&kscan0>;               
-
+		/* 1U 的标准大小是 100。长 宽 X Y */
         keys = <&key_physical_attrs 100 100    0    0       0     0     0>
                , <&key_physical_attrs 100 100  100    0       0     0     0>
                , <&key_physical_attrs 100 100  200    0       0     0     0>
                , <&key_physical_attrs 100 100  300    0       0     0     0>
+				/* 第二排 */
                , <&key_physical_attrs 100 100    0  100       0     0     0>
                , <&key_physical_attrs 100 100  100  100       0     0     0>
                , <&key_physical_attrs 100 100  200  100       0     0     0>
                , <&key_physical_attrs 100 100  300  100       0     0     0>
+				/* 第三排 */
                , <&key_physical_attrs 100 100    0  200       0     0     0>
                , <&key_physical_attrs 100 100  100  200       0     0     0>
                , <&key_physical_attrs 100 100  200  200       0     0     0>
+				/* 第四排 */
                , <&key_physical_attrs 100 100    0  300       0     0     0>
                , <&key_physical_attrs 100 100  100  300       0     0     0>
                , <&key_physical_attrs 100 100  200  300       0     0     0>
+				/* 第五排 */
                , <&key_physical_attrs 100 100    0  400       0     0     0>
                , <&key_physical_attrs 100 100  100  400       0     0     0>
                , <&key_physical_attrs 100 100  200  400       0     0     0>
