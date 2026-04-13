@@ -1,1 +1,1 @@
-zephyr_sources(src/custom_status_led.c)
+zephyr_sources(src/custom_led.c)
