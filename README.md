@@ -3,6 +3,11 @@
 
 This is a wireless dual-mode multifunction mini-keyboard project with EC11 knob XBOX joystick and a 4 channels touchpad. Coding based on ZMK firmware v0.3.
 
+# 电路设计
+本项目的PCB使用嘉立创EDA设计，使用嘉立创每月免费打板额度，PCB会开源在嘉立创社区，与本项目代码仓库互相引用；
+
+BOM表和成本也一并开源在立创社区~
+
 <img width="767" height="729" alt="image" src="https://github.com/user-attachments/assets/d6e857e1-50d8-4e14-8bf3-5f4a70986501" />
 
 # ZMK编写
