@@ -59,7 +59,13 @@ overlay 在这里描述设备的配置和矩阵网络形状，还有MCU引脚配
 ## zmk keymap editor工具
 https://nickcoutsos.github.io/keymap-editor/
 
-一个还不错的keymap编辑工具，上手有些难度，因为资料太少了
+一个还不错的keymap编辑工具，上手有些难度，因为资料太少了；我后续要自己出一个zmk设置功能的中文视频
+
+## zmk studio 在线改键工具
+https://zmk.studio/
+
+## 键盘测试工具
+https://www.zfrontier.com/lab/keyboardTester
 
 ## workflow自动编译
 本项目使用GitHub的工作流自动编译，在此之前了解了别的作者本地编译和代码空间编译，尝试了一下，也没有搞成，太复杂了；后来发现可以通过写yml的方式执行自动编译的工作流，解放双手和颈椎，非常方便。
@@ -73,5 +79,6 @@ https://nickcoutsos.github.io/keymap-editor/
 
 焊锡不要上太多，多了会冒尖、挂到别的焊盘上、短路；上的太少会虚焊没反应；总之是个技术活。
 
+助焊膏很好用~
 # 外壳的设计和组装
 通过SolidWorks设计外壳；还在设计中；
