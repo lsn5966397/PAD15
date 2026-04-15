@@ -13,7 +13,6 @@
     chosen {
         zmk,kscan = &kscan_combo;
         zmk,physical-layout = &layout;
-        zmk,matrix-transform = &transform;
         zmk,underglow = &pad15_leds;
         zmk,battery = &vbatt;
         zephyr,console = &uart0;
@@ -71,45 +70,41 @@
     };
 
     /* 3. 物理布局 */
-    physical_layouts {
-        compatible = "zmk,physical-layouts";
-        
-        layout: layout {
-            compatible = "zmk,physical-layout";
-            display-name = "Pad15";
-            transform = <&transform>;
-            kscan = <&kscan_combo>;                
-            keys = <
-                /* 严格的 21 键定义：宽100 高100 X Y 旋转0 RX0 RY0 */
-                /* 第一排 (4键：含 EC11) */
-                &key_physical_attrs 100 100   0   0   0 0 0
-                &key_physical_attrs 100 100 100   0   0 0 0
-                &key_physical_attrs 100 100 200   0   0 0 0
-                &key_physical_attrs 100 100 300   0   0 0 0
-                /* 第二排 (4键：含 XBOX) */
-                &key_physical_attrs 100 100   0 100   0 0 0
-                &key_physical_attrs 100 100 100 100   0 0 0
-                &key_physical_attrs 100 100 200 100   0 0 0
-                &key_physical_attrs 100 100 300 100   0 0 0
-                /* 第三排 (4键：含 触摸1) */
-                &key_physical_attrs 100 100   0 200   0 0 0
-                &key_physical_attrs 100 100 100 200   0 0 0
-                &key_physical_attrs 100 100 200 200   0 0 0
-                &key_physical_attrs 100 100 300 200   0 0 0
-                /* 第四排 (4键：含 触摸2) */
-                &key_physical_attrs 100 100   0 300   0 0 0
-                &key_physical_attrs 100 100 100 300   0 0 0
-                &key_physical_attrs 100 100 200 300   0 0 0
-                &key_physical_attrs 100 100 300 300   0 0 0
-                /* 第五排 (4键：含 触摸3) */
-                &key_physical_attrs 100 100   0 400   0 0 0
-                &key_physical_attrs 100 100 100 400   0 0 0
-                &key_physical_attrs 100 100 200 400   0 0 0
-                &key_physical_attrs 100 100 300 400   0 0 0
-                /* 第六排 (仅1键：触摸4) */
-                &key_physical_attrs 100 100 300 500   0 0 0
-            >;
-        };
+    layout: layout {
+        compatible = "zmk,physical-layout";
+        display-name = "Pad15";
+        transform = <&transform>;
+        kscan = <&kscan_combo>;                
+        keys = <
+            /* 严格的 21 键定义：宽100 高100 X Y 旋转0 RX0 RY0 */
+            /* 第一排 (4键：含 EC11) */
+            &key_physical_attrs 100 100   0   0   0 0 0
+            &key_physical_attrs 100 100 100   0   0 0 0
+            &key_physical_attrs 100 100 200   0   0 0 0
+            &key_physical_attrs 100 100 300   0   0 0 0
+            /* 第二排 (4键：含 XBOX) */
+            &key_physical_attrs 100 100   0 100   0 0 0
+            &key_physical_attrs 100 100 100 100   0 0 0
+            &key_physical_attrs 100 100 200 100   0 0 0
+            &key_physical_attrs 100 100 300 100   0 0 0
+            /* 第三排 (4键：含 触摸1) */
+            &key_physical_attrs 100 100   0 200   0 0 0
+            &key_physical_attrs 100 100 100 200   0 0 0
+            &key_physical_attrs 100 100 200 200   0 0 0
+            &key_physical_attrs 100 100 300 200   0 0 0
+            /* 第四排 (4键：含 触摸2) */
+            &key_physical_attrs 100 100   0 300   0 0 0
+            &key_physical_attrs 100 100 100 300   0 0 0
+            &key_physical_attrs 100 100 200 300   0 0 0
+            &key_physical_attrs 100 100 300 300   0 0 0
+            /* 第五排 (4键：含 触摸3) */
+            &key_physical_attrs 100 100   0 400   0 0 0
+            &key_physical_attrs 100 100 100 400   0 0 0
+            &key_physical_attrs 100 100 200 400   0 0 0
+            &key_physical_attrs 100 100 300 400   0 0 0
+            /* 第六排 (仅1键：触摸4) */
+            &key_physical_attrs 100 100 300 500   0 0 0
+        >;
     };
 
     /* 4. 电池与传感器节点 */
