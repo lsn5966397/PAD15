@@ -80,6 +80,7 @@
             transform = <&transform>;
             kscan = <&kscan_combo>;                
             keys = <
+                /* 严格的 21 键定义：宽100 高100 X Y 旋转0 RX0 RY0 */
                 /* 第一排 (4键：含 EC11) */
                 &key_physical_attrs 100 100   0   0   0 0 0
                 &key_physical_attrs 100 100 100   0   0 0 0
