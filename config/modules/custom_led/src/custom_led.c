@@ -25,15 +25,13 @@ static struct led_rgb pixels[NUM_PIXELS];
 // ==========================================
 static uint8_t battery_level = 100;
 static int status_display_frames = 66;     
-static uint8_t current_effect = 3;         // 默认开启对角线瀑布幻彩
+static uint8_t current_effect = 2;         
+static uint8_t current_speed = 1;          // 【新增】动画速度倍率，开机默认 1 倍速 (最优雅缓慢)
 static bool is_awake = true;
-static uint8_t tracked_layer = 0;          // 锁定开机必然是第 0 层 (解决开机闪绿灯Bug)
+static uint8_t tracked_layer = 0;          
 
 // ==========================================
-// 工业标准 HSV 引擎 (彻底解决颜色缺失与亮度闪烁)
-// h: 色相(0-255，覆盖完整的红橙黄绿青蓝紫256种颜色)
-// s: 饱和度(固定255，最艳丽)
-// v: 亮度(固定255，绝对恒定亮度，消灭任何呼吸/熄灭感)
+// 工业标准 HSV 引擎 
 // ==========================================
 static struct led_rgb hsv_to_rgb(uint8_t h, uint8_t s, uint8_t v) {
     struct led_rgb rgb;
@@ -44,7 +42,7 @@ static struct led_rgb hsv_to_rgb(uint8_t h, uint8_t s, uint8_t v) {
         return rgb;
     }
 
-    region = h / 43; // 256 / 6 个区域
+    region = h / 43; 
     remainder = (h - (region * 43)) * 6; 
 
     p = (v * (255 - s)) >> 8;
@@ -52,12 +50,12 @@ static struct led_rgb hsv_to_rgb(uint8_t h, uint8_t s, uint8_t v) {
     t = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
 
     switch (region) {
-        case 0: rgb.r = v; rgb.g = t; rgb.b = p; break; // 红 -> 黄
-        case 1: rgb.r = q; rgb.g = v; rgb.b = p; break; // 黄 -> 绿
-        case 2: rgb.r = p; rgb.g = v; rgb.b = t; break; // 绿 -> 青
-        case 3: rgb.r = p; rgb.g = q; rgb.b = v; break; // 青 -> 蓝
-        case 4: rgb.r = t; rgb.g = p; rgb.b = v; break; // 蓝 -> 紫
-        default: rgb.r = v; rgb.g = p; rgb.b = q; break; // 紫 -> 红
+        case 0: rgb.r = v; rgb.g = t; rgb.b = p; break; 
+        case 1: rgb.r = q; rgb.g = v; rgb.b = p; break; 
+        case 2: rgb.r = p; rgb.g = v; rgb.b = t; break; 
+        case 3: rgb.r = p; rgb.g = q; rgb.b = v; break; 
+        case 4: rgb.r = t; rgb.g = p; rgb.b = v; break; 
+        default: rgb.r = v; rgb.g = p; rgb.b = q; break; 
     }
     return rgb;
 }
@@ -80,26 +78,23 @@ void custom_led_thread_main(void) {
             continue;
         }
 
-        // --- 1. 渲染前 15 颗矩阵灯 (256色全光谱平滑过渡) ---
+        // --- 1. 渲染前 15 颗矩阵灯 ---
         for (int i = 0; i < STATUS_LED_IDX; i++) {
             uint8_t col = i % 3; 
             uint8_t row = i / 3; 
 
+            // 【关键修改】：将所有的 tick * 2 替换为 tick * current_speed，实现快捷键无级调速
             if (current_effect == 0) {
-                // 全局同步变色
-                pixels[i] = hsv_to_rgb((uint8_t)(tick * 2), 255, 255); 
+                pixels[i] = hsv_to_rgb((uint8_t)(tick * current_speed), 255, 255); 
             } 
             else if (current_effect == 1) {
-                // 横向流动 (左 -> 右) 【注意：这里改成了减号 -，修正方向】
-                pixels[i] = hsv_to_rgb((uint8_t)(tick * 2 - col * 30), 255, 255);
+                pixels[i] = hsv_to_rgb((uint8_t)(tick * current_speed - col * 30), 255, 255);
             }
             else if (current_effect == 2) {
-                // 纵向瀑布 (上 -> 下) 【注意：这里改成了减号 -，修正方向】
-                pixels[i] = hsv_to_rgb((uint8_t)(tick * 2 - row * 25), 255, 255);
+                pixels[i] = hsv_to_rgb((uint8_t)(tick * current_speed - row * 25), 255, 255);
             }
             else if (current_effect == 3) {
-                // 斜向瀑布 (左上 -> 右下) 【注意：双重减号，完全按照从上到下的视觉习惯】
-                pixels[i] = hsv_to_rgb((uint8_t)(tick * 2 - col * 20 - row * 20), 255, 255);
+                pixels[i] = hsv_to_rgb((uint8_t)(tick * current_speed - col * 20 - row * 20), 255, 255);
             }
         }
 
@@ -110,11 +105,11 @@ void custom_led_thread_main(void) {
         } 
         else if (status_display_frames > 0) {
             switch (tracked_layer) {
-                case 0: pixels[STATUS_LED_IDX] = (struct led_rgb){0xFF, 0x50, 0x90}; break; // 粉嫩樱花色
-                case 1: pixels[STATUS_LED_IDX] = (struct led_rgb){0xFF, 0x80, 0x00}; break; // 纯正橙色
+                // 【硬件级色彩校准】
+                case 0: pixels[STATUS_LED_IDX] = (struct led_rgb){0xFF, 0x00, 0xA0}; break; // 修正粉色：掐断绿光，增强蓝光，完美樱花紫粉
+                case 1: pixels[STATUS_LED_IDX] = (struct led_rgb){0xFF, 0xC0, 0x00}; break; // 修正橙色：大幅推高绿光，抵消红光霸权
                 case 2: pixels[STATUS_LED_IDX] = (struct led_rgb){0x00, 0xFF, 0x00}; break; // 纯正绿色
-                case 3: pixels[STATUS_LED_IDX] = (struct led_rgb){0x00, 0x80, 0xFF}; break; // 纯正天蓝
-                default: pixels[STATUS_LED_IDX] = (struct led_rgb){0xFF, 0xFF, 0xFF}; break; 
+                default: pixels[STATUS_LED_IDX] = (struct led_rgb){0xFF, 0xFF, 0xFF}; break; // 未知层(包括幽灵第3层)强制显示纯白，拒绝误导
             }
             status_display_frames--; 
         } 
@@ -131,7 +126,7 @@ void custom_led_thread_main(void) {
                 
         led_strip_update_rgb(led_strip, pixels, NUM_PIXELS);
         tick++;
-        k_sleep(K_MSEC(30)); // 动画帧率 (降低数值可加快流动速度)
+        k_sleep(K_MSEC(30)); 
     }
 }
 K_THREAD_DEFINE(custom_led_tid, 1024, custom_led_thread_main, NULL, NULL, NULL, 7, 0, 0);
@@ -158,9 +153,16 @@ ZMK_SUBSCRIPTION(activity_status, zmk_activity_state_changed);
 static int keycode_listener(const zmk_event_t *eh) {
     const struct zmk_keycode_state_changed *ev = as_zmk_keycode_state_changed(eh);
     if (ev && ev->state) {
+        // 快捷键 1：切换灯效 (你在 ZMK 映射里绑定的 0x6A)
         if (ev->keycode == 0x6A) {
             current_effect++;
             if (current_effect >= MAX_EFFECTS) current_effect = 0;
+        }
+        // 快捷键 2：切换流动速度 【新增】
+        // 你可以在 zmk 键盘映射里绑定一个不用的键 (比如对应 0x6B)，按下它就可以循环调速
+        if (ev->keycode == 0x6B) {
+            current_speed++;
+            if (current_speed > 3) current_speed = 1; // 在 1(慢), 2(中), 3(快) 之间循环
         }
     }
     return ZMK_EV_EVENT_BUBBLE;
