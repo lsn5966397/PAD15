@@ -124,6 +124,11 @@
         sensors = <&ec11_encoder>;
         triggers-per-rotation = <80>; 
     };
+
+	joystick_listener {
+        compatible = "zmk,input-listener";
+        device = <&anin0>; // 必须精准指向你的第三方模拟输入节点
+    };
 };
 
 /* --- 硬件外设引用区 (灯带、SPI、ADC、UART 等保持不变) --- */
