@@ -187,36 +187,44 @@
 };
 
 / {
-	anin0: analog_input_0 {
-		compatible = "zmk,analog-input";
-		sampling-hz = <100>;
-		x-ch {
-			io-channels = <&adc 0>; // <--- see ain-map.png for nRF52840
-			mv-mid = <1630>;
-			mv-min-max = <1600>;
-			mv-deadzone = <10>;
-			scale-multiplier = <1>;
-			scale-divisor = <70>;
-			invert;
-			evt-type = <INPUT_EV_REL>;
-			input-code = <INPUT_REL_X>;
-		};
-		y-ch {
-			io-channels = <&adc 5>; // <--- see ain-map.png for nRF52840
-			mv-mid = <1630>;
-			mv-min-max = <1600>;
-			mv-deadzone = <10>;
-			scale-multiplier = <3>;
-			scale-divisor = <4>;
-			invert;
-			evt-type = <INPUT_EV_REL>;
-			input-code = <INPUT_REL_Y>;
-
-			/* enable report mdoe for gamepad axix or knob */
-			/* to only call input_report on quantquantized value is updated */
-			/* NOTE: mouse input does NOT need this */
-			report-on-change-only;
-
-		};
-	};
-};
+    anin0: analog_input_0 {
+        compatible = "zmk,analog-input";
+        sampling-hz = <100>;
+        
+        x-ch {
+            io-channels = <&adc 0>; 
+            
+            /* 1. 中位电压：nRF52840 在 3.3V 供电下，理论中点在 1650 左右 */
+            mv-mid = <1650>;      
+            mv-min-max = <1600>;  
+            
+            /* 2. 大幅拉大死区：从 10 提到 80，过滤掉静止时的硬件抖动 */
+            mv-deadzone = <80>;   
+            
+            /* 3. 调整缩放：分母（divisor）越大，鼠标移动越慢、越精准 */
+            scale-multiplier = <1>;
+            scale-divisor = <30>; 
+            
+            invert;               
+            evt-type = <INPUT_EV_REL>;
+            input-code = <INPUT_REL_X>;
+        };
+        
+        y-ch {
+            io-channels = <&adc 5>; 
+            mv-mid = <1650>;      
+            mv-min-max = <1600>;  
+            
+            /* 4. Y轴死区同步拉大 */
+            mv-deadzone = <80>;   
+            
+            /* 5. 修正 Y 轴灵敏度：使其与 X 轴对称，不再暴走 */
+            scale-multiplier = <1>;
+            scale-divisor = <30>; 
+            
+            invert;
+            evt-type = <INPUT_EV_REL>;
+            input-code = <INPUT_REL_Y>;
+            report-on-change-only;
+        };
+    };
